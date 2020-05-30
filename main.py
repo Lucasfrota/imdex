@@ -4,15 +4,11 @@ from imdex.Indexer import Indexer
 if __name__ == "__main__":
     
     idr = Indexer()
-    
+
     cap = Captioner()
 
     images = [cap.load_image("./sample_img/cat.jpg"), cap.load_image("./sample_img/dog.jpg")]
 
-    #result = cap.captionize(images)
+    idr.add_images(images, ['cat', 'dog'])
 
-    res = idr.add_images(images, "")
-    print(res.shape)
-    
-    #print('Prediction Caption:')
-    #print(result)
+    print(idr.query("a cat is laying"))
