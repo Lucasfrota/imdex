@@ -1,14 +1,11 @@
-from imdex.Captioner import Captioner
 from imdex.Indexer import Indexer
 
 if __name__ == "__main__":
     
-    idr = Indexer()
+    idr = Indexer(captions_csv_path="captions.csv")
 
-    cap = Captioner()
+    images = [idr.load_image("./sample_img/surf.jpg")]
 
-    images = [cap.load_image("./sample_img/cat.jpg"), cap.load_image("./sample_img/dog.jpg")]
-
-    idr.add_images(images, ['cat', 'dog'])
+    idr.add_images(images, ['surf'])
 
     print(idr.query("a cat is laying"))
