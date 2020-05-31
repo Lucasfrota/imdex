@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="imdex",
-    version="0.1.1",
+    version="0.1.3",
     author="Lucas Frota",
     author_email="lucv.frota@gmail.com",
     description="Imdex is a library that allows semantic searches over images sets",
