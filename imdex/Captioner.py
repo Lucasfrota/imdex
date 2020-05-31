@@ -1,6 +1,5 @@
 from tensorflow import keras, expand_dims, nn, reduce_sum, concat, reshape, zeros, train, io, image, random
 
-import re
 import numpy as np
 import pickle
 
