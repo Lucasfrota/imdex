@@ -1,7 +1,9 @@
 from tensorflow import keras, expand_dims, nn, reduce_sum, concat, reshape, zeros, train, io, image, random
+from imdex.downloads import download_files, is_files_downloaded
 
 import numpy as np
 import pickle
+import pathlib
 
 BATCH_SIZE = 64
 embedding_dim = 256
@@ -82,8 +84,13 @@ class Captioner:
 
     def __init__(self):
 
-        checkpoint_path = "./imdex/data/ckp"
-        tokenizer_path = "./imdex/data/tokens/tokenizer_1.pickle"
+        if(not is_files_downloaded()):
+            download_files()
+
+        current_path = str(pathlib.Path(__file__).parent.absolute()).replace('\\','\/')
+
+        checkpoint_path = current_path + "/data/ckp"
+        tokenizer_path = current_path + "/data/tokens/tokenizer_1.pickle"
 
         optimizer = keras.optimizers.Adam()
 
@@ -93,7 +100,8 @@ class Captioner:
         self.ckpt = train.Checkpoint(encoder=self.encoder,
                                 decoder=self.decoder,
                                 optimizer = optimizer)
-        self.ckpt_manager = train.CheckpointManager(self.ckpt, checkpoint_path, max_to_keep=5)
+        
+        self.ckpt_manager = train.CheckpointManager(self.ckpt, checkpoint_path, max_to_keep=5)    
 
         with open(tokenizer_path, 'rb') as handle:
             self.tokenizer = pickle.load(handle)
