@@ -1,11 +1,19 @@
 import pandas as pd
+import pathlib
 
 from imdex.Captioner import Captioner
 from gensim.models import KeyedVectors
+from imdex.downloads import download_files, is_files_downloaded
 
 class Indexer:
 
     def __init__(self, captions_csv_path=None):
+
+        if(not is_files_downloaded()):
+            download_files()
+
+        self.current_path = str(pathlib.Path(__file__).parent.absolute()).replace('\\','\/')
+
         if(captions_csv_path == None):
             self.original_captions = []
             self.image_references = []
@@ -15,7 +23,7 @@ class Indexer:
             self.image_references = list(captions_csv.image_references)
             
         self.cap = Captioner()
-        self.we_model = KeyedVectors.load_word2vec_format("./imdex/data/word_embeddings/glove_6B_50d_txt.word2vec", binary=False)
+        self.we_model = KeyedVectors.load_word2vec_format(self.current_path + "/data/word_embeddings/glove_6B_50d_txt.word2vec", binary=False)
 
     def add_images(self, images, references, redundancy=3):
         preds = self.cap.captionize(images)
