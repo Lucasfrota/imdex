@@ -18,7 +18,7 @@ setuptools.setup(
         'pickle-mixin',
         'tensorflow',
         'pyemd',
-        'google_drive_downloader'
+        'googledrivedownloader'
     ],
     packages=setuptools.find_packages(),
     classifiers=[
