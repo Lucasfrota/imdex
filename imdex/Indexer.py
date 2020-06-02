@@ -3,7 +3,7 @@ import pathlib
 
 from imdex.Captioner import Captioner
 from gensim.models import KeyedVectors
-from imdex.downloads import download_files, is_files_downloaded
+from imdex.loader import download_files, is_files_downloaded
 
 class Indexer:
 

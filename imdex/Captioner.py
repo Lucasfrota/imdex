@@ -1,5 +1,5 @@
 from tensorflow import keras, expand_dims, nn, reduce_sum, concat, reshape, zeros, train, io, image, random
-from imdex.downloads import download_files, is_files_downloaded
+from imdex.loader import download_files, is_files_downloaded
 
 import numpy as np
 import pickle
