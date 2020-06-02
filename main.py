@@ -1,14 +1,13 @@
 from imdex.Indexer import Indexer
-#from imdex.downloads import download_files
+from imdex.loader import load_image, load_foder
 
 if __name__ == "__main__":
     
-    idr = Indexer(captions_csv_path="captions.csv")
+    idr = Indexer()
 
-    images = [idr.load_image("./sample_img/surf.jpg")]
+    #images = [load_image("./sample_img/surf.jpg")]
+    images, references = load_foder("sample_img")
 
-    idr.add_images(images, ['surf'])
+    idr.add_images(images, references)
 
     print(idr.query("a cat is laying"))
-
-    #download_files()

@@ -3,7 +3,8 @@ import pathlib
 
 from imdex.Captioner import Captioner
 from gensim.models import KeyedVectors
-from imdex.loader import download_files, is_files_downloaded
+from imdex.loader import download_files, is_files_downloaded, load_image
+from tensorflow import data
 
 class Indexer:
 
@@ -12,7 +13,7 @@ class Indexer:
         if(not is_files_downloaded()):
             download_files()
 
-        self.current_path = str(pathlib.Path(__file__).parent.absolute()).replace('\\','\/')
+        self.current_path = str(pathlib.Path(__file__).parent.absolute()).replace(r'\\',r'\/')
 
         if(captions_csv_path == None):
             self.original_captions = []
@@ -26,8 +27,9 @@ class Indexer:
         self.we_model = KeyedVectors.load_word2vec_format(self.current_path + "/data/word_embeddings/glove_6B_50d_txt.word2vec", binary=False)
 
     def add_images(self, images, references, redundancy=3):
-        preds = self.cap.captionize(images)
-        for index, sentence in enumerate(preds):
+        caption = self.cap.captionize(images)
+        print(caption)
+        for index, sentence in enumerate(caption):
             self.original_captions.append(sentence)
             self.image_references.append(references[index])
 
@@ -40,6 +42,16 @@ class Indexer:
                                     "image_references":self.image_references})
         
         data_as_csv.to_csv(file_name, index=False)
-        
-    def load_image(self, image_path):
-        return self.cap.load_image(image_path)
+
+    def __process_img(self, file_path):
+        reference = file_path
+        img = load_image(file_path)
+        print(img.shape)
+        caption = self.cap.captionize(img)
+
+        self.original_captions.append(caption[0])
+        self.image_references.append(reference)
+
+    def load_foder(self, folder_path):
+        list_ds = data.Dataset.list_files(folder_path+"/*")
+        list_ds.map(self.__process_img, num_parallel_calls=data.experimental.AUTOTUNE)

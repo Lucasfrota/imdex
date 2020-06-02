@@ -1,5 +1,6 @@
 import os, pathlib
 from google_drive_downloader import GoogleDriveDownloader as gdd
+from tensorflow import data, image, io
 
 current_path = str(pathlib.Path(__file__).parent.absolute())
 
@@ -36,9 +37,31 @@ files = [
     }
 ]
 
+def load_image(image_path, img_width=299, img_height=299):
+    img = io.read_file(image_path)
+    img = image.decode_jpeg(img, channels=3)
+    img = image.resize(img, (img_width, img_height))
+    return img
+
+def __process_img(file_path):
+    reference = file_path
+    img = load_image(file_path)
+    return img, reference
+
+def load_foder(folder_path):
+    images = []
+    references = []
+    list_ds = data.Dataset.list_files(folder_path+"/*")
+    labeled_ds = list_ds.map(__process_img, num_parallel_calls=data.experimental.AUTOTUNE)
+    for image, reference in labeled_ds:
+        images.append(image.numpy())
+        references.append(reference.numpy())
+
+    return images, references
+
 def is_files_downloaded():
     for file in files:
-        path = file["file_location"].replace('\\','\/')
+        path = file["file_location"].replace(r'\\',r'\/')
         if(not os.path.exists(path)):
             return False
 
@@ -46,7 +69,7 @@ def is_files_downloaded():
 
 def download_files():
     for file in files:
-        path = file["file_location"].replace('\\','\/')
+        path = file["file_location"].replace(r'\\',r'\/')
         gdd.download_file_from_google_drive(file_id=file["file_id"],
                                             dest_path=path,
                                             unzip=True)

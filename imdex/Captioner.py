@@ -1,4 +1,4 @@
-from tensorflow import keras, expand_dims, nn, reduce_sum, concat, reshape, zeros, train, io, image, random
+from tensorflow import keras, expand_dims, nn, reduce_sum, concat, reshape, zeros, train, random
 from imdex.loader import download_files, is_files_downloaded
 
 import numpy as np
@@ -117,14 +117,9 @@ class Captioner:
 
         self.image_features_extract_model = keras.Model(new_input, hidden_layer)
 
-    def load_image(self, image_path):
-        img = io.read_file(image_path)
-        img = image.decode_jpeg(img, channels=3)
-        img = image.resize(img, (299, 299))
-        img = keras.applications.inception_v3.preprocess_input(img)
-        return img
-
     def __captionize(self, image):
+
+        image = keras.applications.inception_v3.preprocess_input(image)
 
         hidden = self.decoder.reset_state(batch_size=1)
 
