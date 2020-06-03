@@ -28,7 +28,6 @@ class Indexer:
 
     def add_images(self, images, references, redundancy=3):
         caption = self.cap.captionize(images)
-        print(caption)
         for index, sentence in enumerate(caption):
             self.original_captions.append(sentence)
             self.image_references.append(references[index])
